@@ -2,15 +2,24 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 <?php
+// Display all errors (for debugging; remove in production)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Capture form inputs
+    // Capture and sanitize form inputs
     $name = htmlspecialchars($_POST['name']);
     $email = htmlspecialchars($_POST['email']);
     $message = htmlspecialchars($_POST['message']);
 
-    // Check if inputs are not empty
+    // Validate inputs
     if (!empty($name) && !empty($email) && !empty($message)) {
-        // Email configuration (replace with your own email address)
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "Invalid email format.";
+            exit;
+        }
+
+        // Email configuration (replace with your email address)
         $to = "rupeshsanvatsarkar@gmail.com";
         $subject = "New Contact Form Submission";
         $body = "Name: $name\nEmail: $email\nMessage:\n$message";
@@ -28,4 +37,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo "Invalid request method.";
 }
-?>
